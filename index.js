@@ -32,9 +32,9 @@ client.on('ready', () => {
 client.on('message', msg => {
     // If the message is ping, reply pong.
     if (msg.content === 'ping') {
-        //msg.author.send(platformEmbed);
-        //msg.author.send(genreEmbed);
-        //msg.author.send(gameEmbed);
+        msg.author.send(platformEmbed);
+        msg.author.send(genreEmbed);
+        msg.author.send(gameEmbed);
     }
 });
 
@@ -73,7 +73,7 @@ function buildEmbeds(roles){
 
 // Control function that will handle the different parts of registering roles.
 function registerRoles(member){
-
+    
 }
 
 // Let the user which platforms to add to his profile
