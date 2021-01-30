@@ -17,17 +17,24 @@ const gameEmbed = new Discord.MessageEmbed()
     .setTitle("What games do you mostly play?")
     .setDescription("Enter the numbers of all the relevant games, seperated by a space.");
 
+// Read the roles file
+fs.readFile(roleFile, 'utf-8', (err, jsonString) => {
+        const roles = JSON.parse(jsonString);
+        buildEmbeds(roles);
+});
+
 // Simple logged on msg
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    buildEmbeds();
 });
 
 // When a message is sent on the server,
 client.on('message', msg => {
     // If the message is ping, reply pong.
     if (msg.content === 'ping') {
-        msg.author.send('pong');
+        msg.author.send(platformEmbed);
+        msg.author.send(genreEmbed);
+        msg.author.send(gameEmbed);
     }
 });
 
@@ -44,13 +51,8 @@ fs.readFile(tokenFile, 'utf-8', (err, jsonString) => {
     client.login(data.token);
 });
 
-// Read the roles file
-fs.readFile(roleFile, 'utf-8', (err, jsonString) => {
-    const roles = JSON.parse(jsonString);    
-});
-
 // Build the embeds with the arrays of roles.
-function buildEmbeds(){
+function buildEmbeds(roles){
     // temp variable to add all of an array together
     var theFields = "";
     for(i = 0; i < roles.platform.length; i++){
