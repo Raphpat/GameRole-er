@@ -32,9 +32,9 @@ client.on('ready', () => {
 client.on('message', msg => {
     // If the message is ping, reply pong.
     if (msg.content === 'ping') {
-        msg.author.send(platformEmbed);
-        msg.author.send(genreEmbed);
-        msg.author.send(gameEmbed);
+        //msg.author.send(platformEmbed);
+        //msg.author.send(genreEmbed);
+        //msg.author.send(gameEmbed);
     }
 });
 
@@ -56,17 +56,17 @@ function buildEmbeds(roles){
     // temp variable to add all of an array together
     var theFields = "";
     for(i = 0; i < roles.platform.length; i++){
-        theFields += "**" + i + 1 + "** " + roles.platform[i] + "\n";
+        theFields += "**" + (i + 1) + "** " + roles.platform[i] + "\n";
     }
     platformEmbed.addField("Choose your platform(s)", theFields, false);
     theFields = "";
     for(i = 0; i < roles.genre.length; i++){
-        theFields += "**" + i + 1 + "** " + roles.genre[i] + "\n";
+        theFields += "**" + (i + 1) + "** " + roles.genre[i] + "\n";
     }
     genreEmbed.addField("Choose your genre(s)", theFields, false);
     theFields = "";
     for(i = 0; i < roles.game.length; i++){
-        theFields += "**" + i + 1 + "** " + roles.game[i] + "\n";
+        theFields += "**" + (i + 1) + "** " + roles.game[i] + "\n";
     }
     gameEmbed.addField("Choose your game(s)", theFields, false);
 }
