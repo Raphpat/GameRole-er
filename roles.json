@@ -1,5 +1,5 @@
 {
-    "Platform" : ["PC", "PlayStation", "XBOX"],
-    "Genre" : ["FPS", "MMO", "MOBA", "RPG", "Strategy", "Racing"],
-    "Games" : ["Destiny 2", "Rainbow Six", "Apex Legends", "Dead by Daylight", "Call of Duty", "Rocket League", "Minecraft", "Heroes of the Storm", "League of Legends", "Among Us"]
+    "platform" : ["PC", "PlayStation", "XBOX"],
+    "genre" : ["FPS", "MMO", "MOBA", "RPG", "Strategy", "Racing"],
+    "games" : ["Destiny 2", "Rainbow Six", "Apex Legends", "Dead by Daylight", "Call of Duty", "Rocket League", "Minecraft", "Heroes of the Storm", "League of Legends", "Among Us"]
 }
