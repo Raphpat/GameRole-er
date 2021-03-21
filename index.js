@@ -47,7 +47,7 @@ client.on('guildMemberAdd', member => {
 
 // Login using a local json file containing the token (Never put your bot's token on the internet!)
 fs.readFile(tokenFile, 'utf-8', (err, jsonString) => {
-    const data = JSON.parse(jsonString);    
+    const data = JSON.parse(jsonString);
     client.login(data.token);
 });
 
@@ -73,21 +73,46 @@ function buildEmbeds(roles){
 
 // Control function that will handle the different parts of registering roles.
 function registerRoles(member){
-    
+  // Get roles by name
+  // Platforms
+  let PC = message.guild.roles.cache.find(role => role.name === "PC");
+  let PS = message.guild.roles.cache.find(role => role.name === "Playstation");
+  let XBOX = message.guild.roles.cache.find(role => role.name === "XBOX");
+  let Switch = message.guild.roles.cache.find(role => role.name === "Nintendo Switch");
+  // Genres
+  let FPS = message.guild.roles.cache.find(role => role.name === "FPS");
+  let MMO = message.guild.roles.cache.find(role => role.name === "MMO");
+  let MOBA = message.guild.roles.cache.find(role => role.name === "MOBA");
+  let RPG = message.guild.roles.cache.find(role => role.name === "RPG");
+  let Strat = message.guild.roles.cache.find(role => role.name === "Strategy");
+  let Racing = message.guild.roles.cache.find(role => role.name === "Racing");
+  // Games
+  let Dest2 = message.guild.roles.cache.find(role => role.name === "Destiny 2");
+  let R6 = message.guild.roles.cache.find(role => role.name === "Rainbow Six");
+  let Apex = message.guild.roles.cache.find(role => role.name === "Apex Legends");
+  let CS = message.guild.roles.cache.find(role => role.name === "CS:GO");
+  let DbD = message.guild.roles.cache.find(role => role.name === "Dead by Daylight");
+  let CoD = message.guild.roles.cache.find(role => role.name === "Call of Duty");
+  let RL = message.guild.roles.cache.find(role => role.name === "Rocket League");
+  let MC = message.guild.roles.cache.find(role => role.name === "Minecraft");
+  let HotS = message.guild.roles.cache.find(role => role.name === "Heroes of the Storm");
+  let LoL = message.guild.roles.cache.find(role => role.name === "League of Legends");
+  let GTAV = message.guild.roles.cache.find(role => role.name === "GTA V");
+  let Among = message.guild.roles.cache.find(role => role.name === "Among Us");
+
 }
 
-// Let the user which platforms to add to his profile
+// Let the user choose which platforms to add to his profile
 function choosePlatform(member){
 
 }
 
-// Let the user which genres to add to his profile
+// Let the user choose which genres to add to his profile
 function chooseGenres(member){
 
 }
 
-// Let the user which games to add to his profile
+// Let the user choose which games to add to his profile
 function chooseGames(member){
 
 }
-
