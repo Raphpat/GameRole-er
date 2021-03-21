@@ -115,7 +115,6 @@ function registerRoles(member){
 
 }
 
-<<<<<<< HEAD
 // Let the user choose which platforms to add to his profile
 function choosePlatform(member){
 
@@ -128,20 +127,7 @@ function chooseGenres(member){
 
 // Let the user choose which games to add to his profile
 function chooseGames(member){
-=======
-
-// Let the user which platforms to add to his profile
-function choosePlatform(member) {
-
+    
 }
-
-// Let the user which genres to add to his profile
-function chooseGenres(member) {
-
-}
-
-// Let the user which games to add to his profile
-function chooseGames(member) {
->>>>>>> 59a43f86bfce76c1a45b54a399c841797f10501e
 
 }
