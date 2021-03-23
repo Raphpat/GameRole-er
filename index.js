@@ -108,6 +108,9 @@ function choosePlatform(member) {
 
     // Send the embed
     member.send(platformEmbed);
+    // TODO Event listener for a reply
+    // Identify the numbers in the reply 
+    // Give the corresponding roles
     
 }
 
