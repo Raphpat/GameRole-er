@@ -48,14 +48,15 @@ client.on('message', msg => {
 // Event listener for a new member joining.
 client.on('guildMemberAdd', member => {
     // Send a message to the new member to register his roles.
+    
     member.send(`Hello! And welcome to ${member.guild.name}.\nI am a bot, and will guide you through your first steps in this server.`)
-    var dmChannel = member.createDM;
-    dmChannel.sendMessage(agreeEmbed).queue(message => message.addReaction("✔").queue());
-    const filter = (reaction, user) => reaction.emoji.name === "✔"
-    message.awaitReactions(filter, { time: 15000 })
-        .then(collected => console.log(`Collected ${collected.size} reactions`))
-        .catch(console.error)
-
+    member.createDM().then(dmChannel => {
+        dmChannel.send(agreeEmbed).queue(message => message.addReaction("✔").queue());
+        const filter = (reaction, user) => reaction.emoji.name === "✔"
+        message.awaitReactions(filter, { time: 15000 })
+            .then(collected => console.log(`Collected ${collected.size} reactions`))
+            .catch(console.error)
+    }).catch(console.error);
 });
 
 // Login using a local json file containing the token (Never put your bot's token on the internet!)
