@@ -48,14 +48,19 @@ client.on('message', msg => {
 // Event listener for a new member joining.
 client.on('guildMemberAdd', member => {
     // Send a message to the new member to register his roles.
-    
     member.send(`Hello! And welcome to ${member.guild.name}.\nI am a bot, and will guide you through your first steps in this server.`)
     member.createDM().then(dmChannel => {
-        dmChannel.send(agreeEmbed).queue(message => message.addReaction("✔").queue());
-        const filter = (reaction, user) => reaction.emoji.name === "✔"
-        message.awaitReactions(filter, { time: 15000 })
-            .then(collected => console.log(`Collected ${collected.size} reactions`))
-            .catch(console.error)
+        dmChannel.send(agreeEmbed).then(function (message) {
+            message.react("✔");
+            const filter = (reaction, user) => reaction.emoji.name === "✔"
+            message.awaitReactions(filter, { time: 15000 })
+                .then(function (collected) {
+                    console.log(`Collected ${collected.size} reactions`);
+                    registerRoles(member);
+                })
+                .catch(console.error)
+        });
+
     }).catch(console.error);
 });
 
@@ -87,8 +92,8 @@ function buildEmbeds(roles) {
 
 // Control function that will handle the different parts of registering roles.
 function registerRoles(member) {
-
-
+    console.log("Registering role for " + member.user.username);
+    choosePlatform(member);
 
 
 }
@@ -96,36 +101,40 @@ function registerRoles(member) {
 // Let the user choose which platforms to add to his profile
 function choosePlatform(member) {
     // Platforms
-    let PC = message.guild.roles.cache.find(role => role.name === "PC");
-    let PS = message.guild.roles.cache.find(role => role.name === "Playstation");
-    let XBOX = message.guild.roles.cache.find(role => role.name === "XBOX");
-    let Switch = message.guild.roles.cache.find(role => role.name === "Nintendo Switch");
+    let PC = member.guild.roles.cache.find(role => role.name === "PC");
+    let PS = member.guild.roles.cache.find(role => role.name === "Playstation");
+    let XBOX = member.guild.roles.cache.find(role => role.name === "XBOX");
+    let Switch = member.guild.roles.cache.find(role => role.name === "Nintendo Switch");
+
+    // Send the embed
+    member.send(platformEmbed);
+    
 }
 
 // Let the user choose which genres to add to his profile
 function chooseGenres(member) {
     // Genres
-    let FPS = message.guild.roles.cache.find(role => role.name === "FPS");
-    let MMO = message.guild.roles.cache.find(role => role.name === "MMO");
-    let MOBA = message.guild.roles.cache.find(role => role.name === "MOBA");
-    let RPG = message.guild.roles.cache.find(role => role.name === "RPG");
-    let Strat = message.guild.roles.cache.find(role => role.name === "Strategy");
-    let Racing = message.guild.roles.cache.find(role => role.name === "Racing");
+    let FPS = member.guild.roles.cache.find(role => role.name === "FPS");
+    let MMO = member.guild.roles.cache.find(role => role.name === "MMO");
+    let MOBA = member.guild.roles.cache.find(role => role.name === "MOBA");
+    let RPG = member.guild.roles.cache.find(role => role.name === "RPG");
+    let Strat = member.guild.roles.cache.find(role => role.name === "Strategy");
+    let Racing = member.guild.roles.cache.find(role => role.name === "Racing");
 }
 
 // Let the user choose which games to add to his profile
 function chooseGames(member) {
     // Games
-    let Dest2 = message.guild.roles.cache.find(role => role.name === "Destiny 2");
-    let R6 = message.guild.roles.cache.find(role => role.name === "Rainbow Six");
-    let Apex = message.guild.roles.cache.find(role => role.name === "Apex Legends");
-    let CS = message.guild.roles.cache.find(role => role.name === "CS:GO");
-    let DbD = message.guild.roles.cache.find(role => role.name === "Dead by Daylight");
-    let CoD = message.guild.roles.cache.find(role => role.name === "Call of Duty");
-    let RL = message.guild.roles.cache.find(role => role.name === "Rocket League");
-    let MC = message.guild.roles.cache.find(role => role.name === "Minecraft");
-    let HotS = message.guild.roles.cache.find(role => role.name === "Heroes of the Storm");
-    let LoL = message.guild.roles.cache.find(role => role.name === "League of Legends");
-    let GTAV = message.guild.roles.cache.find(role => role.name === "GTA V");
-    let Among = message.guild.roles.cache.find(role => role.name === "Among Us");
+    let Dest2 = member.guild.roles.cache.find(role => role.name === "Destiny 2");
+    let R6 = member.guild.roles.cache.find(role => role.name === "Rainbow Six");
+    let Apex = member.guild.roles.cache.find(role => role.name === "Apex Legends");
+    let CS = member.guild.roles.cache.find(role => role.name === "CS:GO");
+    let DbD = member.guild.roles.cache.find(role => role.name === "Dead by Daylight");
+    let CoD = member.guild.roles.cache.find(role => role.name === "Call of Duty");
+    let RL = member.guild.roles.cache.find(role => role.name === "Rocket League");
+    let MC = member.guild.roles.cache.find(role => role.name === "Minecraft");
+    let HotS = member.guild.roles.cache.find(role => role.name === "Heroes of the Storm");
+    let LoL = member.guild.roles.cache.find(role => role.name === "League of Legends");
+    let GTAV = member.guild.roles.cache.find(role => role.name === "GTA V");
+    let Among = member.guild.roles.cache.find(role => role.name === "Among Us");
 }
