@@ -38,10 +38,10 @@ client.on('ready', () => {
 client.on('message', msg => {
     // If the message is ping, reply pong.
     if (msg.content === 'ping') {
-        msg.author.send(platformEmbed);
-        msg.author.send(genreEmbed);
-        msg.author.send(gameEmbed);
-        msg.react("✔");
+        //msg.author.send(platformEmbed);
+        //msg.author.send(genreEmbed);
+        //msg.author.send(gameEmbed);
+        msg.react('👍');
     }
 });
 
@@ -51,16 +51,18 @@ client.on('guildMemberAdd', member => {
     member.send(`Hello! And welcome to ${member.guild.name}.\nI am a bot, and will guide you through your first steps in this server.`)
     member.createDM().then(dmChannel => {
         dmChannel.send(agreeEmbed).then(function (message) {
-            message.react("✔");
-            const filter = (reaction, user) => reaction.emoji.name === "✔"
-            message.awaitReactions(filter, { time: 15000 })
+            message.react('👍');
+            const filter = (reaction, user) => reaction.emoji.name === '👍' && user.id != message.author.id;
+            message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
                 .then(function (collected) {
                     console.log(`Collected ${collected.size} reactions`);
                     registerRoles(member, dmChannel);
                 })
-                .catch(console.error)
+                .catch(collected => {
+                    console.log(`After a minute, no reaction from ${member.name}`);
+                    message.reply('You didn\'t react, so you will not be rolled by this bot.');
+                });
         });
-
     }).catch(console.error);
 });
 
@@ -101,23 +103,22 @@ function registerRoles(member, dmChannel) {
 // Let the user choose which platforms to add to his profile
 function choosePlatform(member, dmChannel) {
     // Platforms
-   /** let PC = member.guild.roles.cache.find(role => role.name === "PC");
-    let PS = member.guild.roles.cache.find(role => role.name === "Playstation");
-    let XBOX = member.guild.roles.cache.find(role => role.name === "XBOX");
-    let Switch = member.guild.roles.cache.find(role => role.name === "Nintendo Switch");
-    **/
+    /** let PC = member.guild.roles.cache.find(role => role.name === "PC");
+     let PS = member.guild.roles.cache.find(role => role.name === "Playstation");
+     let XBOX = member.guild.roles.cache.find(role => role.name === "XBOX");
+     let Switch = member.guild.roles.cache.find(role => role.name === "Nintendo Switch");
+     **/
 
     var validate = new RegExp('([0-9]{1,2})?');
 
     // Send the embed
     member.send(platformEmbed);
-    const filter;
-    var coll = Discord.MessageCollector(dmChannel, filter, { time: 15000 });
+    var coll = new Discord.MessageCollector(dmChannel, { time: 15000 });
     coll.on("collect", msg => {
         var msgArray = msg.split(" ");
         var looping = Math.min(msgArray.length, roles.platform.length);
-        for(i = 0; i < looping; i++){
-            if(validate.test(msgArray[i])){
+        for (i = 0; i < looping; i++) {
+            if (validate.test(msgArray[i])) {
                 member.roles.add(member.guild.roles.cache.find(role => role.name === roles.platform[i]))
             }
         }
@@ -135,18 +136,17 @@ function chooseGenres(member, dmChannel) {
     let Strat = member.guild.roles.cache.find(role => role.name === "Strategy");
     let Racing = member.guild.roles.cache.find(role => role.name === "Racing");
     **/
-   
+
     var validate = new RegExp('([0-9]{1,2})?');
 
     // Send the embed
     member.send(genreEmbed);
-    const filter;
-    var coll = Discord.MessageCollector(dmChannel, filter, { time: 15000 });
+    var coll = new Discord.MessageCollector(dmChannel, { time: 15000 });
     coll.on("collect", msg => {
         msgArray = msg.split(" ");
         var looping = Math.min(msgArray.length, roles.genre.length);
-        for(i = 0; i < looping; i++){
-            if(validate.test(msgArray[i])){
+        for (i = 0; i < looping; i++) {
+            if (validate.test(msgArray[i])) {
                 member.roles.add(member.guild.roles.cache.find(role => role.name === roles.genre[i]))
             }
         }
@@ -170,18 +170,17 @@ function chooseGames(member) {
     let GTAV = member.guild.roles.cache.find(role => role.name === "GTA V");
     let Among = member.guild.roles.cache.find(role => role.name === "Among Us");
     **/
-   
+
     var validate = new RegExp('([0-9]{1,2})?');
 
     // Send the embed
     member.send(gameEmbed);
-    const filter;
-    var coll = Discord.MessageCollector(dmChannel, filter, { time: 15000 });
+    var coll = new Discord.MessageCollector(dmChannel, { time: 15000 });
     coll.on("collect", msg => {
         msgArray = msg.split(" ");
         var looping = Math.min(msgArray.length, roles.game.length);
-        for(i = 0; i < looping; i++){
-            if(validate.test(msgArray[i])){
+        for (i = 0; i < looping; i++) {
+            if (validate.test(msgArray[i])) {
                 member.roles.add(member.guild.roles.cache.find(role => role.name === roles.game[i]))
             }
         }
