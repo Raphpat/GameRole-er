@@ -2,7 +2,8 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const tokenFile = "./authToken.json";
 const roleFile = "./roles.json";
-const fs = require('fs')
+const fs = require('fs');
+var roles;
 
 // Creating the basic embed
 const platformEmbed = new Discord.MessageEmbed()
@@ -25,7 +26,7 @@ const agreeEmbed = new Discord.MessageEmbed()
 
 // Read the roles file
 fs.readFile(roleFile, 'utf-8', (err, jsonString) => {
-    const roles = JSON.parse(jsonString);
+    roles = JSON.parse(jsonString);
     buildEmbeds(roles);
 });
 
@@ -96,93 +97,102 @@ function buildEmbeds(roles) {
 function registerRoles(member, dmChannel) {
     console.log("Registering role for " + member.user.username);
     choosePlatform(member, dmChannel);
-
-
 }
 
 // Let the user choose which platforms to add to his profile
 function choosePlatform(member, dmChannel) {
-    // Platforms
-    /** let PC = member.guild.roles.cache.find(role => role.name === "PC");
-     let PS = member.guild.roles.cache.find(role => role.name === "Playstation");
-     let XBOX = member.guild.roles.cache.find(role => role.name === "XBOX");
-     let Switch = member.guild.roles.cache.find(role => role.name === "Nintendo Switch");
-     **/
-
     var validate = new RegExp('([0-9]{1,2})?');
-
     // Send the embed
     member.send(platformEmbed);
-    var coll = new Discord.MessageCollector(dmChannel, { time: 15000 });
-    coll.on("collect", msg => {
-        var msgArray = msg.split(" ");
-        var looping = Math.min(msgArray.length, roles.platform.length);
-        for (i = 0; i < looping; i++) {
-            if (validate.test(msgArray[i])) {
-                member.roles.add(member.guild.roles.cache.find(role => role.name === roles.platform[i]))
+    // So long as the author of the message is not a bot
+    const filter = m => !m.author.bot;
+    dmChannel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
+        .then(function (collected) {
+            console.log(`Collected an answer for ${member.user.username} in the platform roling category.`)
+            // collected is a map, so transform it to an array, then to string gets the contents
+            var msgArray = collected.array().toString().split(" ");
+            // If the user has entered more numbers than there should be, to avoid array out of bounds
+            var looping = Math.min(msgArray.length, roles.platform.length);
+            var roleToGive = member.guild.roles.cache.find(role => role.name === roles.title[0]);
+            member.roles.add(roleToGive).catch(console.error);
+            for (i = 0; i < looping; i++) {
+                if (validate.test(msgArray[i])) {
+                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.platform[i]);
+                    member.roles.add(roleToGive).catch(console.error);
+                }
             }
-        }
-    })
+        })
+        .catch(collected => {
+            console.log(collected);
+            console.log(`No answer from ${member.username} in the platform roling category.`)
+            dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
+        });
+
+    chooseGenres(member, dmChannel);
 }
 
 // Let the user choose which genres to add to his profile
 function chooseGenres(member, dmChannel) {
-    // Genres
-    /**
-    let FPS = member.guild.roles.cache.find(role => role.name === "FPS");
-    let MMO = member.guild.roles.cache.find(role => role.name === "MMO");
-    let MOBA = member.guild.roles.cache.find(role => role.name === "MOBA");
-    let RPG = member.guild.roles.cache.find(role => role.name === "RPG");
-    let Strat = member.guild.roles.cache.find(role => role.name === "Strategy");
-    let Racing = member.guild.roles.cache.find(role => role.name === "Racing");
-    **/
-
     var validate = new RegExp('([0-9]{1,2})?');
 
     // Send the embed
     member.send(genreEmbed);
-    var coll = new Discord.MessageCollector(dmChannel, { time: 15000 });
-    coll.on("collect", msg => {
-        msgArray = msg.split(" ");
-        var looping = Math.min(msgArray.length, roles.genre.length);
-        for (i = 0; i < looping; i++) {
-            if (validate.test(msgArray[i])) {
-                member.roles.add(member.guild.roles.cache.find(role => role.name === roles.genre[i]))
+    // So long as the author of the message is not a bot
+    const filter = m => !m.author.bot;
+    dmChannel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
+        .then(function (collected) {
+            console.log(`Collected an answer for ${member.user.username} in the genre roling category.`)
+            // collected is a map, so transform it to an array, then to string gets the contents
+            var msgArray = collected.array().toString().split(" ");
+            // If the user has entered more numbers than there should be, to avoid array out of bounds
+            var looping = Math.min(msgArray.length, roles.genre.length);
+            var roleToGive = member.guild.roles.cache.find(role => role.name === roles.title[1]);
+            member.roles.add(roleToGive).catch(console.error);
+            for (i = 0; i < looping; i++) {
+                if (validate.test(msgArray[i])) {
+                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.genre[i]);
+                    member.roles.add(roleToGive).catch(console.error);
+                }
             }
-        }
-    })
+        })
+        .catch(collected => {
+            console.log(collected);
+            console.log(`No answer from ${member.user.username} in the genre roling category.`)
+            dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
+        });
+
+    chooseGames(member, dmChannel);
 }
 
 // Let the user choose which games to add to his profile
-function chooseGames(member) {
-    // Games
-    /**
-    let Dest2 = member.guild.roles.cache.find(role => role.name === "Destiny 2");
-    let R6 = member.guild.roles.cache.find(role => role.name === "Rainbow Six");
-    let Apex = member.guild.roles.cache.find(role => role.name === "Apex Legends");
-    let CS = member.guild.roles.cache.find(role => role.name === "CS:GO");
-    let DbD = member.guild.roles.cache.find(role => role.name === "Dead by Daylight");
-    let CoD = member.guild.roles.cache.find(role => role.name === "Call of Duty");
-    let RL = member.guild.roles.cache.find(role => role.name === "Rocket League");
-    let MC = member.guild.roles.cache.find(role => role.name === "Minecraft");
-    let HotS = member.guild.roles.cache.find(role => role.name === "Heroes of the Storm");
-    let LoL = member.guild.roles.cache.find(role => role.name === "League of Legends");
-    let GTAV = member.guild.roles.cache.find(role => role.name === "GTA V");
-    let Among = member.guild.roles.cache.find(role => role.name === "Among Us");
-    **/
-
+function chooseGames(member, dmChannel) {
     var validate = new RegExp('([0-9]{1,2})?');
 
     // Send the embed
     member.send(gameEmbed);
-    var coll = new Discord.MessageCollector(dmChannel, { time: 15000 });
-    coll.on("collect", msg => {
-        msgArray = msg.split(" ");
-        var looping = Math.min(msgArray.length, roles.game.length);
-        for (i = 0; i < looping; i++) {
-            if (validate.test(msgArray[i])) {
-                member.roles.add(member.guild.roles.cache.find(role => role.name === roles.game[i]))
+    // So long as the author of the message is not a bot
+    const filter = m => !m.author.bot;
+    dmChannel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
+        .then(function (collected) {
+            console.log(`Collected an answer for ${member.user.username} in the game roling category.`)
+            // collected is a map, so transform it to an array, then to string gets the contents
+            var msgArray = collected.array().toString().split(" ");
+            // If the user has entered more numbers than there should be, to avoid array out of bounds
+            var looping = Math.min(msgArray.length, roles.game.length);
+            var roleToGive = member.guild.roles.cache.find(role => role.name === roles.title[2]);
+            member.roles.add(roleToGive).catch(console.error);
+            for (i = 0; i < looping; i++) {
+                if (validate.test(msgArray[i])) {
+                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.game[i]);
+                    member.roles.add(roleToGive).catch(console.error);
+                }
             }
-        }
-    })
+        })
+        .catch(collected => {
+            console.log(collected);
+            console.log(`No answer from ${member.user.username} in the game roling category.`)
+            dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
+        });
+    
+    console.log(`Finished rolling ` + member.user.username);
 }
