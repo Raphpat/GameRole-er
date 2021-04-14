@@ -56,7 +56,7 @@ client.on('guildMemberAdd', member => {
             message.awaitReactions(filter, { time: 15000 })
                 .then(function (collected) {
                     console.log(`Collected ${collected.size} reactions`);
-                    registerRoles(member);
+                    registerRoles(member, dmChannel);
                 })
                 .catch(console.error)
         });
@@ -91,43 +91,72 @@ function buildEmbeds(roles) {
 }
 
 // Control function that will handle the different parts of registering roles.
-function registerRoles(member) {
+function registerRoles(member, dmChannel) {
     console.log("Registering role for " + member.user.username);
-    choosePlatform(member);
+    choosePlatform(member, dmChannel);
 
 
 }
 
 // Let the user choose which platforms to add to his profile
-function choosePlatform(member) {
+function choosePlatform(member, dmChannel) {
     // Platforms
-    let PC = member.guild.roles.cache.find(role => role.name === "PC");
+   /** let PC = member.guild.roles.cache.find(role => role.name === "PC");
     let PS = member.guild.roles.cache.find(role => role.name === "Playstation");
     let XBOX = member.guild.roles.cache.find(role => role.name === "XBOX");
     let Switch = member.guild.roles.cache.find(role => role.name === "Nintendo Switch");
+    **/
+
+    var validate = new RegExp('([0-9]{1,2})?');
 
     // Send the embed
     member.send(platformEmbed);
-    // TODO Event listener for a reply
-    // Identify the numbers in the reply 
-    // Give the corresponding roles
-    
+    const filter;
+    var coll = Discord.MessageCollector(dmChannel, filter, { time: 15000 });
+    coll.on("collect", msg => {
+        var msgArray = msg.split(" ");
+        var looping = Math.min(msgArray.length, roles.platform.length);
+        for(i = 0; i < looping; i++){
+            if(validate.test(msgArray[i])){
+                member.roles.add(member.guild.roles.cache.find(role => role.name === roles.platform[i]))
+            }
+        }
+    })
 }
 
 // Let the user choose which genres to add to his profile
-function chooseGenres(member) {
+function chooseGenres(member, dmChannel) {
     // Genres
+    /**
     let FPS = member.guild.roles.cache.find(role => role.name === "FPS");
     let MMO = member.guild.roles.cache.find(role => role.name === "MMO");
     let MOBA = member.guild.roles.cache.find(role => role.name === "MOBA");
     let RPG = member.guild.roles.cache.find(role => role.name === "RPG");
     let Strat = member.guild.roles.cache.find(role => role.name === "Strategy");
     let Racing = member.guild.roles.cache.find(role => role.name === "Racing");
+    **/
+   
+    var validate = new RegExp('([0-9]{1,2})?');
+
+    // Send the embed
+    member.send(genreEmbed);
+    const filter;
+    var coll = Discord.MessageCollector(dmChannel, filter, { time: 15000 });
+    coll.on("collect", msg => {
+        msgArray = msg.split(" ");
+        var looping = Math.min(msgArray.length, roles.genre.length);
+        for(i = 0; i < looping; i++){
+            if(validate.test(msgArray[i])){
+                member.roles.add(member.guild.roles.cache.find(role => role.name === roles.genre[i]))
+            }
+        }
+    })
 }
 
 // Let the user choose which games to add to his profile
 function chooseGames(member) {
     // Games
+    /**
     let Dest2 = member.guild.roles.cache.find(role => role.name === "Destiny 2");
     let R6 = member.guild.roles.cache.find(role => role.name === "Rainbow Six");
     let Apex = member.guild.roles.cache.find(role => role.name === "Apex Legends");
@@ -140,4 +169,21 @@ function chooseGames(member) {
     let LoL = member.guild.roles.cache.find(role => role.name === "League of Legends");
     let GTAV = member.guild.roles.cache.find(role => role.name === "GTA V");
     let Among = member.guild.roles.cache.find(role => role.name === "Among Us");
+    **/
+   
+    var validate = new RegExp('([0-9]{1,2})?');
+
+    // Send the embed
+    member.send(gameEmbed);
+    const filter;
+    var coll = Discord.MessageCollector(dmChannel, filter, { time: 15000 });
+    coll.on("collect", msg => {
+        msgArray = msg.split(" ");
+        var looping = Math.min(msgArray.length, roles.game.length);
+        for(i = 0; i < looping; i++){
+            if(validate.test(msgArray[i])){
+                member.roles.add(member.guild.roles.cache.find(role => role.name === roles.game[i]))
+            }
+        }
+    })
 }
