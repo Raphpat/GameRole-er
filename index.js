@@ -121,14 +121,14 @@ function choosePlatform(member, dmChannel) {
                     member.roles.add(roleToGive).catch(console.error);
                 }
             }
+            chooseGenres(member, dmChannel);
         })
         .catch(collected => {
             console.log(collected);
-            console.log(`No answer from ${member.username} in the platform roling category.`)
+            console.log(`No answer from ${member.username} in the platform roling category.`);
             dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
+            chooseGenres(member, dmChannel);
         });
-
-    chooseGenres(member, dmChannel);
 }
 
 // Let the user choose which genres to add to his profile
@@ -154,14 +154,14 @@ function chooseGenres(member, dmChannel) {
                     member.roles.add(roleToGive).catch(console.error);
                 }
             }
+            chooseGames(member, dmChannel);
         })
         .catch(collected => {
             console.log(collected);
             console.log(`No answer from ${member.user.username} in the genre roling category.`)
             dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
+            chooseGames(member, dmChannel);
         });
-
-    chooseGames(member, dmChannel);
 }
 
 // Let the user choose which games to add to his profile
