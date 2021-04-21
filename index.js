@@ -56,11 +56,11 @@ client.on('guildMemberAdd', member => {
             const filter = (reaction, user) => reaction.emoji.name === '👍' && user.id != message.author.id;
             message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
                 .then(function (collected) {
-                    console.log(`Collected ${collected.size} reactions`);
+                    console.log(`\n${member.user.username} approved rolling`);
                     registerRoles(member, dmChannel);
                 })
                 .catch(collected => {
-                    console.log(`After a minute, no reaction from ${member.name}`);
+                    console.log(`\nAfter a minute, no reaction from ${member.name}`);
                     message.reply('You didn\'t react, so you will not be rolled by this bot.');
                 });
         });
@@ -95,7 +95,7 @@ function buildEmbeds(roles) {
 
 // Control function that will handle the different parts of registering roles.
 function registerRoles(member, dmChannel) {
-    console.log("Registering role for " + member.user.username);
+    console.log("Registering roles for " + member.user.username);
     choosePlatform(member, dmChannel);
 }
 
@@ -117,15 +117,16 @@ function choosePlatform(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i])) {
-                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.platform[i]);
+                    console.log("Platform requested: " + msgArray[i]);
+                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.platform[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
             }
             chooseGenres(member, dmChannel);
         })
         .catch(collected => {
-            console.log(collected);
-            console.log(`No answer from ${member.username} in the platform roling category.`);
+            //console.log(collected);
+            console.log(`No answer in the platform roling category.`);
             dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
             chooseGenres(member, dmChannel);
         });
@@ -150,15 +151,16 @@ function chooseGenres(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i])) {
-                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.genre[i]);
+                    console.log("Genre requested: " + msgArray[i]);
+                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.genre[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
             }
             chooseGames(member, dmChannel);
         })
         .catch(collected => {
-            console.log(collected);
-            console.log(`No answer from ${member.user.username} in the genre roling category.`)
+            //console.log(collected);
+            console.log(`No answer from in the genre roling category.`)
             dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
             chooseGames(member, dmChannel);
         });
@@ -183,16 +185,16 @@ function chooseGames(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i])) {
-                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.game[i]);
+                    console.log("Game requested: " + msgArray[i]);
+                    roleToGive = member.guild.roles.cache.find(role => role.name === roles.game[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
             }
+            console.log(`Finished rolling ` + member.user.username);
         })
         .catch(collected => {
-            console.log(collected);
-            console.log(`No answer from ${member.user.username} in the game roling category.`)
+            //console.log(collected);
+            console.log(`No answer in the game roling category.`)
             dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
         });
-    
-    console.log(`Finished rolling ` + member.user.username);
 }
