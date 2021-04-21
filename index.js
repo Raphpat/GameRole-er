@@ -116,7 +116,7 @@ function choosePlatform(member, dmChannel) {
             var roleToGive = member.guild.roles.cache.find(role => role.name === roles.title[0]);
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
-                if (validate.test(msgArray[i])) {
+                if (validate.test(msgArray[i]) && msgArray[i] <= roles.platform.length) {
                     //console.log("Platform requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.platform[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
@@ -150,7 +150,7 @@ function chooseGenres(member, dmChannel) {
             var roleToGive = member.guild.roles.cache.find(role => role.name === roles.title[1]);
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
-                if (validate.test(msgArray[i])) {
+                if (validate.test(msgArray[i]) && msgArray[i] <= roles.genre.length) {
                     //console.log("Genre requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.genre[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
@@ -184,7 +184,7 @@ function chooseGames(member, dmChannel) {
             var roleToGive = member.guild.roles.cache.find(role => role.name === roles.title[2]);
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
-                if (validate.test(msgArray[i])) {
+                if (validate.test(msgArray[i]) && msgArray[i] <= roles.game.length) {
                     //console.log("Game requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.game[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
