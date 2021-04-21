@@ -22,7 +22,7 @@ const agreeEmbed = new Discord.MessageEmbed()
     .setTitle("Register the platforms, genres and games you play")
     .setDescription(`This server offers the option to list the platforms, genres of games and games you play as roles so that you can find 
     people who play the same games you do.
-    \nIf you would like to proceed, please react to this message.`);
+    \nIf you would like to proceed, please react to this message with the thumbs up.`);
 
 // Read the roles file
 fs.readFile(roleFile, 'utf-8', (err, jsonString) => {
@@ -117,7 +117,7 @@ function choosePlatform(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i])) {
-                    console.log("Platform requested: " + msgArray[i]);
+                    //console.log("Platform requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.platform[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
@@ -151,7 +151,7 @@ function chooseGenres(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i])) {
-                    console.log("Genre requested: " + msgArray[i]);
+                    //console.log("Genre requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.genre[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
@@ -185,7 +185,7 @@ function chooseGames(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i])) {
-                    console.log("Game requested: " + msgArray[i]);
+                    //console.log("Game requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.game[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
