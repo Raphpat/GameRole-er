@@ -5,7 +5,7 @@ const roleFile = "./roles.json";
 const fs = require('fs');
 var roles;
 
-// Creating the basic embed
+// Creating the basic embeds
 const platformEmbed = new Discord.MessageEmbed()
     .setTitle("What platforms do you game on?")
     .setDescription("Enter the numbers of all the relevant platforms, seperated by a space.");
@@ -24,6 +24,10 @@ const agreeEmbed = new Discord.MessageEmbed()
     people who play the same games you do.
     \nIf you would like to proceed, please react to this message with the thumbs up.`);
 
+const finalisedEmbed = new Discord.MessageEmbed()
+    .setTitle("All done!")
+    .setDescription("Your roles have been given. \n Enjoy your time with Void Ping!");
+
 // Read the roles file
 fs.readFile(roleFile, 'utf-8', (err, jsonString) => {
     roles = JSON.parse(jsonString);
@@ -32,7 +36,7 @@ fs.readFile(roleFile, 'utf-8', (err, jsonString) => {
 
 // Simple logged on msg
 client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
+    logToFile(`Logged in as ${client.user.tag}!`);
 });
 
 // When a message is sent on the server,
@@ -56,11 +60,11 @@ client.on('guildMemberAdd', member => {
             const filter = (reaction, user) => reaction.emoji.name === '👍' && user.id != message.author.id;
             message.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
                 .then(function (collected) {
-                    console.log(`\n${member.user.username} approved rolling`);
+                    logToFile(`\n${member.user.username} approved rolling`);
                     registerRoles(member, dmChannel);
                 })
                 .catch(collected => {
-                    console.log(`\nAfter a minute, no reaction from ${member.name}`);
+                    logToFile(`\nAfter a minute, no reaction from ${member.name}`);
                     message.reply('You didn\'t react, so you will not be rolled by this bot.');
                 });
         });
@@ -73,7 +77,10 @@ fs.readFile(tokenFile, 'utf-8', (err, jsonString) => {
     client.login(data.token);
 });
 
-// Build the embeds with the arrays of roles.
+/**
+ * Build the embeds with the arrays of roles.
+ * @param {Object} roles the content of the roles.json file
+ */
 function buildEmbeds(roles) {
     // temp variable to add all of an array together
     var theFields = "";
@@ -93,13 +100,21 @@ function buildEmbeds(roles) {
     gameEmbed.addField("Choose your game(s)", theFields, false);
 }
 
-// Control function that will handle the different parts of registering roles.
+/**
+ * Control function that will handle the different parts of registering roles.
+ * @param {Discord.GuildMember} member 
+ * @param {Discord.DMChannel} dmChannel 
+ */
 function registerRoles(member, dmChannel) {
-    console.log("Registering roles for " + member.user.username);
+    logToFile("Registering roles for " + member.user.username);
     choosePlatform(member, dmChannel);
 }
 
-// Let the user choose which platforms to add to his profile
+/**
+ * Let the user choose which platforms to add to his profile
+ * @param {Discord.GuildMember} member 
+ * @param {Discord.DMChannel} dmChannel 
+ */
 function choosePlatform(member, dmChannel) {
     var validate = new RegExp('([0-9]{1,2})?');
     // Send the embed
@@ -108,7 +123,7 @@ function choosePlatform(member, dmChannel) {
     const filter = m => !m.author.bot;
     dmChannel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
         .then(function (collected) {
-            console.log(`Collected an answer for ${member.user.username} in the platform roling category.`)
+            logToFile(`Collected an answer for ${member.user.username} in the platform roling category.`)
             // collected is a map, so transform it to an array, then to string gets the contents
             var msgArray = collected.array().toString().split(" ");
             // If the user has entered more numbers than there should be, to avoid array out of bounds
@@ -117,7 +132,7 @@ function choosePlatform(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i]) && msgArray[i] <= roles.platform.length) {
-                    //console.log("Platform requested: " + msgArray[i]);
+                    //logToFile("Platform requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.platform[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
@@ -125,14 +140,18 @@ function choosePlatform(member, dmChannel) {
             chooseGenres(member, dmChannel);
         })
         .catch(collected => {
-            //console.log(collected);
-            console.log(`No answer in the platform roling category.`);
+            //logToFile(collected);
+            logToFile(`No answer in the platform roling category.`);
             dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
             chooseGenres(member, dmChannel);
         });
 }
 
-// Let the user choose which genres to add to his profile
+/**
+ * Let the user choose which genres to add to his profile
+ * @param {Discord.GuildMember} member 
+ * @param {Discord.DMChannel} dmChannel 
+ */
 function chooseGenres(member, dmChannel) {
     var validate = new RegExp('([0-9]{1,2})?');
 
@@ -142,7 +161,7 @@ function chooseGenres(member, dmChannel) {
     const filter = m => !m.author.bot;
     dmChannel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
         .then(function (collected) {
-            console.log(`Collected an answer for ${member.user.username} in the genre roling category.`)
+            logToFile(`Collected an answer for ${member.user.username} in the genre roling category.`)
             // collected is a map, so transform it to an array, then to string gets the contents
             var msgArray = collected.array().toString().split(" ");
             // If the user has entered more numbers than there should be, to avoid array out of bounds
@@ -151,7 +170,7 @@ function chooseGenres(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i]) && msgArray[i] <= roles.genre.length) {
-                    //console.log("Genre requested: " + msgArray[i]);
+                    //logToFile("Genre requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.genre[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
@@ -159,14 +178,18 @@ function chooseGenres(member, dmChannel) {
             chooseGames(member, dmChannel);
         })
         .catch(collected => {
-            //console.log(collected);
-            console.log(`No answer from in the genre roling category.`)
+            //logToFile(collected);
+            logToFile(`No answer from in the genre roling category.`)
             dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
             chooseGames(member, dmChannel);
         });
 }
 
-// Let the user choose which games to add to his profile
+/**
+ * Let the user choose which games to add to his profile
+ * @param {Discord.GuildMember} member 
+ * @param {Discord.DMChannel} dmChannel 
+ */
 function chooseGames(member, dmChannel) {
     var validate = new RegExp('([0-9]{1,2})?');
 
@@ -176,7 +199,7 @@ function chooseGames(member, dmChannel) {
     const filter = m => !m.author.bot;
     dmChannel.awaitMessages(filter, { max: 1, time: 60000, errors: ['time'] })
         .then(function (collected) {
-            console.log(`Collected an answer for ${member.user.username} in the game roling category.`)
+            logToFile(`Collected an answer for ${member.user.username} in the game roling category.`)
             // collected is a map, so transform it to an array, then to string gets the contents
             var msgArray = collected.array().toString().split(" ");
             // If the user has entered more numbers than there should be, to avoid array out of bounds
@@ -185,16 +208,30 @@ function chooseGames(member, dmChannel) {
             member.roles.add(roleToGive).catch(console.error);
             for (i = 0; i < looping; i++) {
                 if (validate.test(msgArray[i]) && msgArray[i] <= roles.game.length) {
-                    //console.log("Game requested: " + msgArray[i]);
+                    //logToFile("Game requested: " + msgArray[i]);
                     roleToGive = member.guild.roles.cache.find(role => role.name === roles.game[msgArray[i] - 1]);
                     member.roles.add(roleToGive).catch(console.error);
                 }
             }
-            console.log(`Finished rolling ` + member.user.username);
+            logToFile(`Finished rolling ` + member.user.username);
+            dmChannel.send(finalisedEmbed);
         })
         .catch(collected => {
-            //console.log(collected);
-            console.log(`No answer in the game roling category.`)
+            //logToFile(collected);
+            logToFile(`No answer in the game roling category.`)
             dmChannel.send('You didn\'t reply, so you will not be rolled for this category.');
         });
+}
+
+/**
+ * Logs the message to a file named by current date
+ * @param {String} message to log in the file
+ */
+function logToFile(message) {
+    var today = new Date();
+    // Create the file name, one file per day
+    fileName = today.getDate() + "_" + (today.getMonth() + 1) + "_" + today.getFullYear() + ".txt";
+    fs.writeFile(fileName, message + '\n', { flag: 'a+' }, (error) => {
+        if (error) throw err;
+    });
 }
