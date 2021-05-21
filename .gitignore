@@ -3,3 +3,4 @@ node_modules/
 authToken.json
 package-lock.json
 test.js
+.vscode/settings.json
